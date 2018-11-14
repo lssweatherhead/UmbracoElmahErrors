@@ -7,6 +7,7 @@ using ClientDependency.Core;
 using Fluent.UmbracoElmah.Helpers;
 using umbraco.cms.businesslogic.packager.standardPackageActions;
 using umbraco.interfaces;
+using Umbraco.Core.Logging;
 
 namespace Fluent.UmbracoElmah.Actions.Package
 {
@@ -66,7 +67,10 @@ namespace Fluent.UmbracoElmah.Actions.Package
         private static XmlNode FindNode(XmlNode rootNode, XmlNode xmlFragment)
         {
             var nameAttr = XmlHelper.GetAttributeValueFromNode(xmlFragment, "name");
-            var xpath = "//" + xmlFragment.Name + (!string.IsNullOrWhiteSpace(nameAttr) ? "/[@name=" + nameAttr + "]" : "");
+            var aliasAttr = XmlHelper.GetAttributeValueFromNode(xmlFragment, "alias");
+            var xpath = "//" + xmlFragment.Name + (!string.IsNullOrWhiteSpace(nameAttr) ? "[@name=" + nameAttr + "]" : !string.IsNullOrWhiteSpace(aliasAttr) ? "[@alias=" + aliasAttr + "]" : "");
+
+            LogHelper.Info<AddXmlFragment>("XPATH for existing node: " + xpath);
 
             return rootNode.SelectSingleNode(xpath);
         }
