@@ -285,6 +285,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\ElmahActionResult.cs" />
+    <Compile Include="Actions\Package\AddXmlFragment.cs" />
+    <Compile Include="Actions\Package\RemoveXmlFragment.cs" />
     <Compile Include="App_Plugins\ElmahLogging\ElmahErrors.ascx.cs">
       <DependentUpon>ElmahErrors.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -294,6 +296,7 @@
     </Compile>
     <Compile Include="App_Start\ElmahRouteConfig.cs" />
     <Compile Include="Controllers\BackOffice\ElmahErrorsController.cs" />
+    <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -343,7 +346,9 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Actions\Result\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
