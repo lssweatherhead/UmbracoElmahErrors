@@ -1,0 +1,58 @@
+﻿<PackageActions>
+	<Action runat="install" undo="false" alias="AddXmlFragment" file="~/web.config" xpath="//configuration" position="end">
+		<elmah>
+			<errorFilter>
+				<test>
+					<equal binding="HttpStatusCode" value="404" type="Int32" />
+				</test>
+			</errorFilter>
+			<security allowRemoteAccess="true" connectionStringName="umbracoDbDSN" applicationName="Umbraco Elmah" />
+		</elmah>
+	</Action>
+
+	<Action runat="install" undo="false" alias="AddXmlFragment" file="~/web.config" xpath="//configuration/configSections" position="end">
+		<sectionGroup name="elmah">
+			<section name="security" requirePermission="false" type="Elmah.SecuritySectionHandler, Elmah" />
+			<section name="errorLog" requirePermission="false" type="Elmah.ErrorLogSectionHandler, Elmah" />
+			<section name="errorMail" requirePermission="false" type="Elmah.ErrorMailSectionHandler, Elmah" />
+			<section name="errorFilter" requirePermission="false" type="Elmah.ErrorFilterSectionHandler, Elmah" />
+		</sectionGroup>
+	</Action>
+
+	<Action runat="install" undo="false" alias="AddXmlFragment" file="~/web.config" xpath="//configuration/system.web/httpModules" position="end">
+		<add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" />
+	</Action>
+	<Action runat="install" undo="false" alias="AddXmlFragment" file="~/web.config" xpath="//configuration/system.web/httpModules" position="end">
+		<add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" />
+	</Action>
+	<Action runat="install" undo="false" alias="AddXmlFragment" file="~/web.config" xpath="//configuration/system.web/httpModules" position="end">
+		<add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" />
+	</Action>
+
+	<Action runat="install" undo="false" alias="AddXmlFragment" file="~/web.config" xpath="//configuration/system.webServer/modules" position="end">
+		<add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" preCondition="managedHandler" />
+	</Action>
+	<Action runat="install" undo="false" alias="AddXmlFragment" file="~/web.config" xpath="//configuration/system.webServer/modules" position="end">
+		<add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" preCondition="managedHandler" />
+	</Action>
+	<Action runat="install" undo="false" alias="AddXmlFragment" file="~/web.config" xpath="//configuration/system.webServer/modules" position="end">
+		<add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" preCondition="managedHandler" />
+	</Action>
+
+	<Action runat="install" undo="false" alias="AddXmlFragment" file="~/config/Dashboard.config" xpath="//dashBoard" position="end">
+		<section alias="ElmahErrors">
+			<access>
+				<grant>admin</grant>
+			</access>
+			<areas>
+				<area>developer</area>
+			</areas>
+			<tab caption="Elmah">
+				<control showOnce="false" addPanel="true" panelCaption="">
+					/App_Plugins/ElmahLogging/ElmahErrors.ascx
+				</control>
+			</tab>
+		</section>
+	</Action>
+
+</PackageActions>

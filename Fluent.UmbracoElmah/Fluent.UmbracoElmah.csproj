@@ -255,6 +255,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="actions.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_Plugins\ElmahLogging\ElmahErrors.ascx" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.controller.js" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.htm" />
