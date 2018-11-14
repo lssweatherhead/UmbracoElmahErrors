@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Xml;
+using ClientDependency.Core;
 using Fluent.UmbracoElmah.Helpers;
 using umbraco.cms.businesslogic.packager.standardPackageActions;
 using umbraco.interfaces;
@@ -16,46 +17,58 @@ namespace Fluent.UmbracoElmah.Actions.Package
             return "AddXmlFragment";
         }
 
-        public bool Execute(string packageName, System.Xml.XmlNode xmlData)
+        public bool Execute(string packageName, XmlNode xmlData)
         {
-            //Set result default to false
-            bool result = false;
-
             //The config file we want to modify
-            string configFileName = VirtualPathUtility.ToAbsolute(XmlHelper.GetAttributeValueFromNode(xmlData, "file"));
+            var configFileName = VirtualPathUtility.ToAbsolute(XmlHelper.GetAttributeValueFromNode(xmlData, "file"));
 
             //Xpath expression to determine the rootnode
-            string xPath = XmlHelper.GetAttributeValueFromNode(xmlData, "xpath");
+            var xPath = XmlHelper.GetAttributeValueFromNode(xmlData, "xpath");
 
             //Holds the position where we want to insert the xml Fragment
-            string position = XmlHelper.GetAttributeValueFromNode(xmlData, "position", "end");
+            var position = XmlHelper.GetAttributeValueFromNode(xmlData, "position", "end");
 
             //Open the config file
-            XmlDocument configDocument = umbraco.xmlHelper.OpenAsXmlDocument(configFileName);
+            var configDocument = Umbraco.Core.XmlHelper.OpenAsXmlDocument(configFileName);
 
             //The xml fragment we want to insert
-            XmlNode xmlFragment = xmlData.SelectSingleNode("./*");
+            var xmlFragment = xmlData.SelectSingleNode("./*");
 
             //Select rootnode using the xpath
-            XmlNode rootNode = configDocument.SelectSingleNode(xPath);
+            var rootNode = configDocument.SelectSingleNode(xPath);
 
-            if (position.Equals("beginning", StringComparison.CurrentCultureIgnoreCase))
+            if (rootNode == null || xmlFragment == null) return false;
+
+            var existingChild = FindNode(rootNode, xmlFragment);
+            if (existingChild != null)
             {
-                //Add xml fragment to the beginning of the selected rootnode
-                rootNode.PrependChild(configDocument.ImportNode(xmlFragment, true));
+                rootNode.ReplaceChild(existingChild, configDocument.ImportNode(xmlFragment, true));
             }
             else
             {
-                //add xml fragment to the end of the selected rootnode
-                rootNode.AppendChild(configDocument.ImportNode(xmlFragment, true));
+                if (position.Equals("beginning", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    //Add xml fragment to the beginning of the selected rootnode
+                    rootNode.PrependChild(configDocument.ImportNode(xmlFragment, true));
+                }
+                else
+                {
+                    //add xml fragment to the end of the selected rootnode
+                    rootNode.AppendChild(configDocument.ImportNode(xmlFragment, true));
+                }
             }
 
             //Save the modified document
             configDocument.Save(HttpContext.Current.Server.MapPath(configFileName));
+            return true;
+        }
 
-            result = true;
+        private static XmlNode FindNode(XmlNode rootNode, XmlNode xmlFragment)
+        {
+            var nameAttr = XmlHelper.GetAttributeValueFromNode(xmlFragment, "name");
+            var xpath = "//" + xmlFragment.Name + (!string.IsNullOrWhiteSpace(nameAttr) ? "[@" + nameAttr + "]" : "");
 
-            return result;
+            return rootNode.SelectSingleNode(xpath);
         }
 
         public System.Xml.XmlNode SampleXml()
