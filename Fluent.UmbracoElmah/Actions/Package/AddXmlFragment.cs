@@ -66,7 +66,7 @@ namespace Fluent.UmbracoElmah.Actions.Package
         private static XmlNode FindNode(XmlNode rootNode, XmlNode xmlFragment)
         {
             var nameAttr = XmlHelper.GetAttributeValueFromNode(xmlFragment, "name");
-            var xpath = "//" + xmlFragment.Name + (!string.IsNullOrWhiteSpace(nameAttr) ? "[@" + nameAttr + "]" : "");
+            var xpath = "//" + xmlFragment.Name + (!string.IsNullOrWhiteSpace(nameAttr) ? "/[@name=" + nameAttr + "]" : "");
 
             return rootNode.SelectSingleNode(xpath);
         }
